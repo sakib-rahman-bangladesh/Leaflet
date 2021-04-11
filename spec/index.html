@@ -3,31 +3,29 @@
 <head>
 	<meta charset="utf-8">
 	<title>Leaflet Spec Runner</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css">
-	<link rel="stylesheet" type="text/css" href="../dist/leaflet.css">
+    	<link rel="stylesheet" type="text/css" href="../dist/leaflet.css">
 </head>
 <body>
 	<div id="mocha"></div>
-	<script src="expect.js"></script>
+	<script src="../node_modules/expect.js/index.js"></script>
 	<script src="../node_modules/mocha/mocha.js"></script>
 	<script src="../node_modules/happen/happen.js"></script>
 	<script src="../node_modules/prosthetic-hand/dist/prosthetic-hand.js"></script>
-	<script src="sinon.js"></script>
+	<script src="../node_modules/sinon/pkg/sinon.js"></script>
 
 	<!-- source files -->
 	<script>
-		// Trick Leaflet into believing we have a touchscreen (for Chrome)
-		if (window.Touch) { window.ontouchstart = function(){} };
+		// Trick Leaflet into believing we have a touchscreen (for desktop)
+		if (window.TouchEvent) { window.ontouchstart = function(){} };
 	</script>
-<!-- 	<script src="../build/deps.js"></script> -->
 
-	<script src="../debug/leaflet-include.js"></script>
+	<script src="../dist/leaflet-src.js"></script>
 
-	<script>
-		mocha.setup({
-			ui: 'bdd',
-			ignoreLeaks: true
-		});
+	<script class="mocha-init">
+		mocha.setup('bdd');
+		mocha.checkLeaks();
 	</script>
 
 	<!-- spec files -->
@@ -98,7 +96,7 @@
 	<!-- /geo/crs -->
 	<script src="suites/geo/CRSSpec.js"></script>
 
-	<script>
+	<script class="mocha-exec">
 		(window.mochaPhantomJS || window.mocha).run();
 	</script>
 </body>

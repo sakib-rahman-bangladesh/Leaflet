@@ -105,12 +105,16 @@ export var Zoom = Control.extend({
 
 		DomUtil.removeClass(this._zoomInButton, className);
 		DomUtil.removeClass(this._zoomOutButton, className);
+		this._zoomInButton.setAttribute('aria-disabled', 'false');
+		this._zoomOutButton.setAttribute('aria-disabled', 'false');
 
 		if (this._disabled || map._zoom === map.getMinZoom()) {
 			DomUtil.addClass(this._zoomOutButton, className);
+			this._zoomOutButton.setAttribute('aria-disabled', 'true');
 		}
 		if (this._disabled || map._zoom === map.getMaxZoom()) {
 			DomUtil.addClass(this._zoomInButton, className);
+			this._zoomInButton.setAttribute('aria-disabled', 'true');
 		}
 	}
 });
@@ -125,6 +129,10 @@ Map.mergeOptions({
 
 Map.addInitHook(function () {
 	if (this.options.zoomControl) {
+		// @section Controls
+		// @property zoomControl: Control.Zoom
+		// The default zoom control (only available if the
+		// [`zoomControl` option](#map-zoomcontrol) was `true` when creating the map).
 		this.zoomControl = new Zoom();
 		this.addControl(this.zoomControl);
 	}

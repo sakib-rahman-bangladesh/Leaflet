@@ -17,7 +17,7 @@ import * as Util from '../core/Util';
  * ```js
  * var videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm',
  * 	videoBounds = [[ 32, -130], [ 13, -100]];
- * L.VideoOverlay(videoUrl, videoBounds ).addTo(map);
+ * L.videoOverlay(videoUrl, videoBounds ).addTo(map);
  * ```
  */
 
@@ -32,7 +32,16 @@ export var VideoOverlay = ImageOverlay.extend({
 
 		// @option loop: Boolean = true
 		// Whether the video will loop back to the beginning when played.
-		loop: true
+		loop: true,
+
+		// @option keepAspectRatio: Boolean = true
+		// Whether the video will save aspect ratio after the projection.
+		// Relevant for supported browsers. See [browser compatibility](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)
+		keepAspectRatio: true,
+
+		// @option muted: Boolean = false
+		// Whether the video starts on mute when loaded.
+		muted: false
 	},
 
 	_initImage: function () {
@@ -41,6 +50,7 @@ export var VideoOverlay = ImageOverlay.extend({
 
 		DomUtil.addClass(vid, 'leaflet-image-layer');
 		if (this._zoomAnimated) { DomUtil.addClass(vid, 'leaflet-zoom-animated'); }
+		if (this.options.className) { DomUtil.addClass(vid, this.options.className); }
 
 		vid.onselectstart = Util.falseFn;
 		vid.onmousemove = Util.falseFn;
@@ -49,12 +59,25 @@ export var VideoOverlay = ImageOverlay.extend({
 		// Fired when the video has finished loading the first frame
 		vid.onloadeddata = Util.bind(this.fire, this, 'load');
 
-		if (wasElementSupplied) { return; }
+		if (wasElementSupplied) {
+			var sourceElements = vid.getElementsByTagName('source');
+			var sources = [];
+			for (var j = 0; j < sourceElements.length; j++) {
+				sources.push(sourceElements[j].src);
+			}
+
+			this._url = (sourceElements.length > 0) ? sources : [vid.src];
+			return;
+		}
 
 		if (!Util.isArray(this._url)) { this._url = [this._url]; }
 
+		if (!this.options.keepAspectRatio && Object.prototype.hasOwnProperty.call(vid.style, 'objectFit')) {
+			vid.style['objectFit'] = 'fill';
+		}
 		vid.autoplay = !!this.options.autoplay;
 		vid.loop = !!this.options.loop;
+		vid.muted = !!this.options.muted;
 		for (var i = 0; i < this._url.length; i++) {
 			var source = DomUtil.create('source');
 			source.src = this._url[i];
