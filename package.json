@@ -4,7 +4,7 @@
   "homepage": "https://leafletjs.com/",
   "description": "JavaScript library for mobile-friendly interactive maps",
   "devDependencies": {
-    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-json": "^5.0.0",
     "eslint": "^8.1.0",
     "eslint-config-mourner": "^2.0.3",
     "git-rev-sync": "^3.0.1",
